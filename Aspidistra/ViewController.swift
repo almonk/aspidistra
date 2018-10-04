@@ -19,6 +19,9 @@ class ViewController: NSViewController {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = CGColor.white
+        self.view.window?.backgroundColor = NSColor.white
         
         self.getReadingList()
         // Do any additional setup after loading the view.
@@ -48,7 +51,7 @@ class ViewController: NSViewController {
         let selectedRow = self.tableView.selectedRow
         let rowDict : NSDictionary = self.tableViewData[selectedRow] as NSDictionary
         let rowUrl = rowDict.value(forKeyPath: "URLString") as! String
-        webView.load(URLRequest.init(url: URL.init(string: rowUrl) ?? URL.init(string: "")!))
+        NSWorkspace.shared.open(URL.init(string: rowUrl)!)
     }
 }
 
@@ -61,8 +64,13 @@ extension ViewController:NSTableViewDataSource, NSTableViewDelegate{
         let rowDict : NSDictionary = self.tableViewData[row] as NSDictionary
         let result:KSTableCellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "sourceCell"), owner: self) as! KSTableCellView
         result.wantsLayer = true
-        result.url.stringValue = rowDict.value(forKeyPath: "URLString") as! String
+        
         result.title.stringValue = rowDict.value(forKeyPath: "URIDictionary.title") as! String
+        
+        // Get domain
+        let rawUrl = rowDict.value(forKeyPath: "URLString") as! String
+        let friendlyUrl = URL.init(string: rawUrl)?.host
+        result.url.stringValue = friendlyUrl!
         
         return result;
     }
