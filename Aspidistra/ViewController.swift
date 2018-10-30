@@ -40,10 +40,13 @@ class ViewController: NSViewController {
         let myDict = NSDictionary(contentsOfFile: pathString)
         let newDict : NSArray = myDict!.value(forKeyPath: "Children") as! NSArray
         let childrenArr : NSDictionary = newDict.object(at: 3) as! NSDictionary
-        let readingListChildrenArr : NSArray = childrenArr.value(forKey: "Children") as! NSArray
+
+        if(childrenArr.value(forKey: "Children") != nil) {
+            let readingListChildrenArr : NSArray = childrenArr.value(forKey: "Children") as! NSArray
         
-        self.tableViewData = readingListChildrenArr as! [[String : Any]]
-        self.tableView.reloadData()
+            self.tableViewData = readingListChildrenArr as! [[String : Any]]
+            self.tableView.reloadData()
+        }
     }
     
     
